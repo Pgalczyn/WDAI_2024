@@ -13,7 +13,40 @@
 
 table {
   border: 1px solid black;
+  border-collapse: collapse;
 }
 td {
   border: 1px solid black;
+}
+
+.Main-Up_container,
+.Main-Bottom_cointainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.Main-Up_container div,
+.Main-Bottom_cointainer div {
+  height: 100px;
+  width: 100px;
+}
+
+.Main-Bottom_cointainer img {
+  width: 100px;
+  height: 100px;
+}
+
+._1 {
+  background-color: blue;
+}
+
+._2 {
+  background-color: yellow;
+}
+._3 {
+  background-color: green;
+}
+._4 {
+  background-color: red;
 }
