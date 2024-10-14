@@ -1,0 +1,19 @@
+.Main-container_cw_1 {
+  text-align: center;
+}
+
+.Main-container_cw_1 h3 {
+  background-color: blueviolet;
+  color: yellow;
+}
+
+.Main-container_cw_1 img {
+  max-width: 600px;
+}
+
+table {
+  border: 1px solid black;
+}
+td {
+  border: 1px solid black;
+}
