@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+
+        body{background-color: black;}
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+     html{
+        cursor: url("aimV4.png"),auto;
+     }
+      #myCanvas {
+  
+  background-image: url('board-bg.jpg');
+  background-size: cover;
+  
+  
+}
+button {
+  display: block;
+}
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="1920" height="910px" ></canvas>
+
+    <script>
+         const canvas = document.getElementById('myCanvas');
+         const ctx = canvas.getContext('2d');
+
+         const heartImg = new Image();
+         heartImg.src = 'full_heart.png'
+
+         heartImg.onload = function(){
+
+        
+            ctx.drawImage(heartImg, 50, 50, 100, 100);
+            ctx.drawImage(heartImg, 150, 50, 100, 100);
+            ctx.drawImage(heartImg, 250, 50, 100, 100);
+            
+            ctx.font = "60px Arial";
+            ctx.letterSpacing = "1,5px"
+            ctx.fillStyle = "White";
+            let num = 0;
+            let paddedNum = num.toString().padStart(6, '0');  
+            ctx.fillText(paddedNum, 1600, 100)
+            
+            
+                const zombieImg = new Image();
+                zombieImg.src = 'walkingdead.png'
+
+                let szerokoscKlatki = 200
+                let wysokoscKlatki = 312
+                let liczbaKlatek = 10
+                let auktualnaKlatka = 0
+
+                let zombieX = canvas.width
+                let zombieY = canvas.height
+
+                class zombie {
+                    constructor(){
+                        this.y = zombieY- Math.floor((Math.random() * (400-310))+310)
+                        this.x = zombieX
+                        this.currentFrame = 0;
+                        this.width = szerokoscKlatki;
+                        this.height = wysokoscKlatki;
+                        this.isAlive = true;
+                        this.speed = Math.floor((Math.random() * (15-5))+5)
+                    }
+
+                    draw(){
+                        const poczatekKlatki_X = this.currentFrame * szerokoscKlatki;
+                        
+                        ctx.drawImage(zombieImg,poczatekKlatki_X,0,szerokoscKlatki,wysokoscKlatki,this.x,this.y,szerokoscKlatki,wysokoscKlatki)
+                    }
+
+                    update(){
+                        this.x -= this.speed
+                        this.currentFrame = (this.currentFrame + 1) % liczbaKlatek
+
+                        if (this.x + this.width < 0) {
+                            this.isAlive = false;
+                            }
+
+                    }
+
+                    isHit(mouseX,mouseY){
+                        return (
+                            mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height
+                        )
+                    }
+                }
+
+                const zombies = [];
+
+                function createNewZombie(){
+
+                    const newZombie = new zombie()
+                    zombies.push(newZombie)
+
+                }
+
+                function zombiesUpdateAndDraw(){
+
+                    ctx.clearRect(0, 500, canvas.width, canvas.height);
+
+                    for(i = zombies.length-1; i > -1;i--){
+
+                        if(zombies[i].isAlive){
+                            zombies[i].update()
+                            zombies[i].draw()
+                        }
+                        else{
+                            zombies.splice(i,1)
+                        }
+                        
+                    }
+
+
+                }
+
+
+            zombieImg.onload = function(){
+                createNewZombie()
+                setInterval(zombiesUpdateAndDraw,100)
+                }
+
+ 
+            setInterval(createNewZombie,4000)
+            
+            canvas.addEventListener('click',(e) => {
+
+                const obszarCanva = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - obszarCanva.left
+                const mouseY = e.clientY - obszarCanva.top
+
+
+                for(let i = zombies.length -1 ; i>= 0;i--){
+
+                    if(zombies[i].isHit(mouseX,mouseY)){
+                        zombies.splice(i,1);
+                        ctx.clearRect(1700, 0, canvas.width, 200);
+                        num += 20
+                        paddedNum = num.toString().padStart(6, '0');  
+                        ctx.fillText(paddedNum, 1600, 100)
+
+                        break;
+                    }
+                    else if(!zombies[i].isHit(mouseX,mouseY)){
+                        ctx.clearRect(1700, 0, canvas.width, 200);
+                        num -= 5
+                        paddedNum = num.toString().padStart(6, '0');  
+                        ctx.fillText(paddedNum, 1600, 100)
+                    }
+
+
+                    
+
+                }
+
+            })
+
+         }
+
+    </script>
+  </body>
+</html>
