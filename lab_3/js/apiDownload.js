@@ -1,11 +1,11 @@
+const tableBody = document.querySelector('#productTable tbody');
+
 fetch('https://dummyjson.com/products')
 .then(data => data.json())
 .then(data => {
 
     const products = data.products.slice(0, 30);
-    const tableBody = document.querySelector('#productTable tbody');
-
-
+   
 
     products.forEach(element => {
         const row = document.createElement('tr')
@@ -19,8 +19,6 @@ fetch('https://dummyjson.com/products')
             row.appendChild(col_image)
         })
 
-
-
         col_title.textContent = element.title
         row.appendChild(col_title)
 
@@ -30,10 +28,6 @@ fetch('https://dummyjson.com/products')
         tableBody.appendChild(row)
 
     });
-
-
-
-
 })
 
 
@@ -60,8 +54,27 @@ function search(){
                 break;
             }
         }
-
         row.style.display = match ? '' : 'none';
     }
-
 }
+
+sortSelect.addEventListener('change',(e) => {
+
+    const sortValue = e.target.value
+    const arrayTable = Array.from(tableBody.querySelectorAll('tr'));
+
+    arrayTable.sort((rowA, rowB) => {
+        const titleA = rowA.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const titleB = rowB.querySelector('td:nth-child(2)').textContent.toLowerCase();
+
+        if (sortValue === 'ascending') {
+            return titleA.localeCompare(titleB);
+        } else if (sortValue === 'descending') {
+            return titleB.localeCompare(titleA);
+        } else {
+            return 0; // oryginalny porządek
+        }
+
+    });
+    arrayTable.forEach(row => tableBody.appendChild(row));
+});
