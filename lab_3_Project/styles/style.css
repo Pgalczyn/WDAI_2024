@@ -193,3 +193,14 @@ footer div p {
   padding: 1%;
   border-radius: 15px;
 }
+
+.button_check {
+  background-color: rgb(136, 63, 209);
+  color: white;
+  padding: 10px 100px;
+  border-radius: 15px;
+}
+
+label {
+  margin-right: 10px;
+}
