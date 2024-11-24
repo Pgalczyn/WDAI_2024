@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Title of the document</title>
+</head>
+
+
+<style>
+    img {max-width: 100px;}
+</style>
+
+<body>
+
+    <div class="stoper">
+
+        <div class="buttons">
+            <button id="button1">start</button>
+            <button id="button2">stop</button>
+            <button id="button3">reset</button>
+        </div>
+        <div id="clock"></div>
+    </div>
+
+    <div class="GeneratorHasel">
+        <input type="text" id="minLength" placeholder="minLength">
+        <input type="text" id="maxLength" placeholder="maxLength">
+        <label>Wielkie litery:</label>
+        <input type="checkbox" id="bigLetters">
+        <label>Znaki specjalne:</label>
+        <input type="checkbox" id="specialSigns">
+        <button id="buttonGenerate">Wygeneruj hasło</button>
+        <h2 id ="resultPass"></h2>
+
+        
+    </div>
+    <div>
+
+        <h1>Produkty</h1>
+        <input type="text" id="textSearch" placeholder="find me !">
+        <select id="sortSelect">
+            <option value="original">Original Order</option>
+            <option value="ascending">Sort by Title (A-Z)</option>
+            <option value="descending">Sort by Title (Z-A)</option>
+        </select>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Zdjęcie</th>
+                    <th>Tytuł</th>
+                    <th>Opis</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+
+</body>
+
+
+<script src="/lab_3/js/stoper.js"></script>
+<script src="/lab_3/js/generatorHasel.js"></script>
+<script src="/lab_3/js/apiDownload.js"></script>
+
+</html>
