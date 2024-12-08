@@ -2,6 +2,7 @@ const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const { json } = require("body-parser");
 
 dotenv.config();
 
@@ -36,9 +37,7 @@ const sqlTable = `CREATE TABLE IF NOT EXISTS orders (
 
     ID_ZAMOWIENIA INTEGER PRIMARY KEY AUTOINCREMENT,
     ID_USER INTEGER NOT NULL,
-    QUANTITY TEXT NOT NULL,
-    ROK INTEGER
-
+    QUANTITY TEXT NOT NULL
 )`;
 db.run(sqlTable, (err) => {
   if (err) {
@@ -48,7 +47,7 @@ db.run(sqlTable, (err) => {
   }
 });
 
-const sqlRows = "select count(*) as count_rows from books";
+const sqlRows = "select count(*) as count_rows from orders";
 
 db.get(sqlRows, (err, row) => {
   if (err) {
@@ -57,10 +56,10 @@ db.get(sqlRows, (err, row) => {
   }
   if (row.count_rows === 0) {
     const sqlAddCoupleRows = `
-    INSERT INTO books (nazwa, autor, rok) VALUES 
-    ('Wojna i pokój', 'Lew Tołstoj', 1869),
-    ('1984', 'George Orwell', 1949),
-    ('Mistrz i Małgorzata', 'Michaił Bułhakow', 1967)
+    INSERT INTO orders (ID_USER,QUANTITY) VALUES 
+    (1,19),
+    (49,2),
+    (7,3)
     `;
 
     db.run(sqlAddCoupleRows, (err) => {
@@ -72,3 +71,67 @@ db.get(sqlRows, (err, row) => {
     });
   }
 });
+
+app.get("/api/orders/:user_Id", (req, res) => {
+  const user_Id = req.params.user_Id;
+  const sql = "select * from orders where ID_USER = ?";
+
+  const param = [user_Id];
+  db.all(sql, [user_Id], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.json(rows);
+  });
+});
+
+app.post("/api/orders", verifyToken, (req, res) => {
+  const { ID_USER, QUANTITY } = req.body;
+  const params = [ID_USER, QUANTITY];
+
+  const sql = `INSERT INTO orders (ID_USER,QUANTITY) VALUES (?,?)`;
+
+  db.run(sql, params, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.json({ ID_ZAMOWIENIA: this.lastID });
+  });
+});
+
+app.delete("/api/orders/:id_zamowienia", verifyToken, (req, res) => {
+  const id_zamowienia = req.params.id_zamowienia;
+
+  const sql = "DELETE from orders where ID_ZAMOWIENIA = ?";
+
+  db.run(sql, id_zamowienia, (err, rows) => {
+    if (err) {
+      return res.status(500), json({ error: err.message });
+    }
+
+    return res.json({ message: `zamowienie nr. ${id_zamowienia} usuniete` });
+  });
+});
+
+app.patch("/api/orders/:id_zamowienia/:quantity", verifyToken, (req, res) => {
+  const id_zamowienia = req.params.id_zamowienia;
+  const quantity = req.params.quantity;
+  const sql = "UPDATE orders SET QUANTITY = ? WHERE ID_ZAMOWIENIA = ?";
+  const params = [quantity, id_zamowienia];
+
+  db.run(sql, params, (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    res.json({ message: "Order updated successfully", changes: this.changes });
+  });
+});
+
+app.listen(3002);

@@ -123,7 +123,7 @@ app.post("/api/books", (req, res) => {
   });
 });
 
-app.delete("/api/books/:ID_ksiazka", (req, res) => {
+app.delete("/api/books/:ID_ksiazka", verifyToken, (req, res) => {
   const id_book = req.params.ID_ksiazka;
   const sql = "DELETE from books where ID_KSIAZKI = ?";
   const param = [id_book];
